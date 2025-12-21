@@ -1,11 +1,21 @@
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import handleResponse from './services/handleResponse.service';
+import cookieParser from 'cookie-parser';
+
+import authRouter from './routes/auth.route';
+import userRouter from './routes/user.route';
+import adminRouter from './routes/admin.route';
 
 const createServer = async () => {
   const app = express();
 
   app.use(express.json());
+  app.use(cookieParser());
+
+  app.use('/api/auth', authRouter);
+  app.use('/api/user', userRouter);
+  app.use('/api/admin', adminRouter);
 
   app.get('/', (_, res) => {
     return res.json({
