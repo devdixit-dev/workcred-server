@@ -1,12 +1,14 @@
 import { Worker } from 'bullmq';
 import redisConnection from '../config/redis.config';
+import sendEmail from '../services/sendEmail.service';
 
 const worker = new Worker(
   'emailQueue',
   async (job) => {
     console.log(`[worker] - job id: ${job.id} - job name: ${job.name}`);
-    setTimeout(() => {}, 3000);
-    console.log(`Simulation of Email sent successfully`);
+    await sendEmail(job.data.to, job.data.subject, job.data.text);
+    
+    console.log(`Email sent successfully`);
   },
   {
     connection: redisConnection,
