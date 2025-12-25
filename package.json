@@ -4,8 +4,8 @@
   "description": "Work Cred",
   "main": "index.js",
   "scripts": {
-    "start": "node --exec ts-node api/app.ts",
-    "dev": "nodemon --exec ts-node api/app.ts",
+    "start": "node --exec ts-node api/server.ts",
+    "dev": "nodemon --exec ts-node api/server.ts",
     "email": "nodemon --exec ts-node api/workers/email.worker.ts",
     "notification": "nodemon --exec ts-node api/workers/notification.worker.ts",
     "logger": "nodemon --exec ts-node api/workers/logger.worker.ts",

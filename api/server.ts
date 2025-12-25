@@ -2,6 +2,7 @@ import 'dotenv/config';
 import cluster from "cluster"
 import os from 'os';
 import createServer from "./app";
+import connectDatabase from './config/db.config';
 
 const startServer = async () => {
   if(cluster.isPrimary) {
@@ -26,6 +27,8 @@ const startServer = async () => {
       console.log(`Worker ${process.pid} started and listening at http://localhost:${port}`);
       console.info(process.uptime());
     });
+
+    await connectDatabase();
   }
 }
 

@@ -11,8 +11,6 @@ import connectDatabase from './config/db.config';
 const createServer = async () => {
   const app = express();
 
-  connectDatabase();
-
   app.use(express.json());
   app.use(cookieParser());
 
