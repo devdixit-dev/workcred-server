@@ -6,9 +6,12 @@ import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route';
 import userRouter from './routes/user.route';
 import adminRouter from './routes/admin.route';
+import connectDatabase from './config/db.config';
 
 const createServer = async () => {
   const app = express();
+
+  connectDatabase();
 
   app.use(express.json());
   app.use(cookieParser());

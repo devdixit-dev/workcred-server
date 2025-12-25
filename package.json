@@ -4,11 +4,12 @@
   "description": "Work Cred",
   "main": "index.js",
   "scripts": {
-    "start": "node --exec ts-node app/app.ts",
-    "dev": "nodemon --exec ts-node app/app.ts",
+    "start": "node --exec ts-node api/app.ts",
+    "dev": "nodemon --exec ts-node api/app.ts",
     "email": "nodemon --exec ts-node api/workers/email.worker.ts",
     "notification": "nodemon --exec ts-node api/workers/notification.worker.ts",
-    "all": "npx npm-run-all --parallel dev email notification"
+    "logger": "nodemon --exec ts-node api/workers/logger.worker.ts",
+    "all": "npx npm-run-all --parallel dev email notification logger"
   },
   "keywords": [],
   "author": "Dev Dixit",
