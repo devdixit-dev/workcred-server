@@ -25,7 +25,6 @@ const startServer = async () => {
 
     app.listen(port, () => {
       console.log(`Worker ${process.pid} started and listening at http://localhost:${port}`);
-      console.info(process.uptime());
     });
 
     await connectDatabase();

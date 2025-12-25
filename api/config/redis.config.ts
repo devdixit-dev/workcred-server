@@ -7,4 +7,12 @@ const redisConnection = new Redis({
   maxRetriesPerRequest: null
 });
 
+redisConnection.on("connect", () => {
+  console.log(`Redis connected`);
+});
+
+redisConnection.on("error", (e) => {
+  console.error(`Redis connection error: ${e}`);
+});
+
 export default redisConnection;
