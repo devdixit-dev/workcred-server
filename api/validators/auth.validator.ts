@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const companyRegister = Joi.object({
+export const companyRegisterSchema = Joi.object({
   companyName: Joi.string().min(4).max(40).trim().required().messages({
     "string:empty": "Company name is required",
     "string:min": "Company name is at least 4 characters long",

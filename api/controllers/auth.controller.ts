@@ -4,6 +4,7 @@ import Company from '../models/company.model';
 import { hashPassword } from '../services/bcrypt.service';
 import User from '../models/user.model';
 import redisConnection from '../config/redis.config';
+import { encodeJwt } from '../utils/jwt.util';
 
 export const authInit = async (req: Request, res: Response) => {
   try{
@@ -33,20 +34,20 @@ export const authInit = async (req: Request, res: Response) => {
     const otp = 123456;
     await redisConnection.set(`verification:${company._id}`, otp, "EX", 180);
 
+    const payload = { id: company._id };
+    const token = encodeJwt(payload);
+
+    res.cookie('v_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'development',
+      sameSite: 'lax',
+      maxAge: 3 * 60 * 1000 // 3 min expiry
+    });
+
     return handleResponse(res, 200, "Account created");
   }
   catch(error) {
     console.error(`Error in auth init: ${error}`);
-    return handleResponse(res, 500, "Internal server error");
-  }
-};
-
-export const signIn = (req: Request, res: Response) => {
-  try{
-
-  }
-  catch(error) {
-    console.error(`Error in sign in: ${error}`);
     return handleResponse(res, 500, "Internal server error");
   }
 };
@@ -57,6 +58,16 @@ export const verify = (req: Request, res: Response) => {
   }
   catch(error) {
     console.error(`Error in verify: ${error}`);
+    return handleResponse(res, 500, "Internal server error");
+  }
+};
+
+export const signIn = (req: Request, res: Response) => {
+  try{
+
+  }
+  catch(error) {
+    console.error(`Error in sign in: ${error}`);
     return handleResponse(res, 500, "Internal server error");
   }
 };

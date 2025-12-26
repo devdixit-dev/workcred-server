@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const secret = process.env.JWT_SECRET;
 
-export const decodeJwt = (payload: JwtPayload) => {
+export const encodeJwt = (payload: JwtPayload) => {
   if(!payload) return null;
   return jwt.sign(payload, String(secret), { expiresIn: "30m" });
 }
