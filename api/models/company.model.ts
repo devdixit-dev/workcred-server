@@ -33,16 +33,23 @@ const companySchema = new mongoose.Schema({
   },
   companyType: {
     type: String,
-    enum: ['Govt', 'Private'],
-    default: 'Private',
+    enum: ['Private Limited', 'Public Limited', 'Partnership', 'LLP', 'Other'],
+    default: 'Private Limited',
     trim: true,
-    min: 6,
+    min: 3,
     max: 20
   },
   companyAdmin: {
     type: String,
+    unique: true,
     trim: true,
     required: true
+  },
+  companyPassword: {
+    type: String,
+    required: true,
+    trim: true,
+    select: false
   },
   employees: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -50,7 +57,6 @@ const companySchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: true,
-    select: false
   }],
   isVerified: {
     type: Boolean,
