@@ -39,7 +39,6 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: Number,
     min: 10,
-    max: 14,
     default: 0,
     unique: true
   },
@@ -53,20 +52,17 @@ const userSchema = new mongoose.Schema({
   },
   department: {
     type: String,
-    enum: ['Engineering', 'HR', 'Marketing', 'Sales', 'Finance', 'Opeartions', 'Back-Office'],
-    required: true
+    enum: ['Engineering', 'HR', 'Marketing', 'Sales', 'Finance', 'Opeartions', 'Back-Office']
   },
   designation: {
     type: String,
-    required: true
   },
   joiningDate: {
     type: Date,
     default: new Date()
   },
   manager: {
-    type: String,
-    required: true
+    type: String
   },
   isActive: {
     type: Boolean,

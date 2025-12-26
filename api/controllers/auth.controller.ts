@@ -4,12 +4,13 @@ import Company from '../models/company.model';
 import { hashPassword } from '../services/bcrypt.service';
 import User from '../models/user.model';
 import redisConnection from '../config/redis.config';
-import { encodeJwt } from '../utils/jwt.util';
+import { encodeJwt, verifyJwt } from '../utils/jwt.util';
 
 export const authInit = async (req: Request, res: Response) => {
   try{
     const {
-      companyName, companyType, companyGSTnumber, companyAdmin, companyContact, companyEmail, companyPassword
+      companyName, companyType, companyGSTnumber, companyAdmin,
+      companyContact, companyEmail, companyPassword
     } = req.body;
 
     const find = await Company.findOne({ 
@@ -25,9 +26,11 @@ export const authInit = async (req: Request, res: Response) => {
       companyAdmin, companyPassword: String(hash), companyContact
     });
 
+    const createEmpID = `EMP-0${company.employees.length}`;
+
     await User.create({
       name: companyAdmin, email: companyEmail, password: String(hash),
-      role: 'Admin', employeeId: 'EMP-001', phone: companyContact,
+      role: 'Admin', employeeId: createEmpID, phone: companyContact,
       company: company._id
     });
 
@@ -52,9 +55,17 @@ export const authInit = async (req: Request, res: Response) => {
   }
 };
 
-export const verify = (req: Request, res: Response) => {
+export const verify = async (req: Request, res: Response) => {
   try{
 
+    const token = req.cookies.v_token;
+    const decoded = verifyJwt(token);
+
+    const d = await redisConnection.get(`verification:${decoded?.id}`)
+
+    res.json({
+      data: d
+    });
   }
   catch(error) {
     console.error(`Error in verify: ${error}`);

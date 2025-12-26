@@ -10,5 +10,5 @@ export const encodeJwt = (payload: JwtPayload) => {
 
 export const verifyJwt = (id: string) => {
   if(!id) return null;
-  return jwt.verify(id, String(secret));
+  return jwt.verify(id, String(secret)) as JwtPayload;
 }

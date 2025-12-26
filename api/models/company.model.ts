@@ -22,7 +22,6 @@ const companySchema = new mongoose.Schema({
   companyContact: {
     type: Number,
     min: 10,
-    max: 15,
     required: true
   },
   companyGSTnumber: {

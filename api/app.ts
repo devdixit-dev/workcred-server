@@ -16,7 +16,7 @@ const createServer = async () => {
   app.use(cookieParser());
 
   app.use(async (req: Request, _: Response, next: NextFunction) => {
-    let entry = `${Date.now()} - ${req.url} | ${req.method} | ${req.ip} | ${req.headers["user-agent"]}\n`
+    let entry = `${Date.now()} - ${req.url} | ${req.method} | ${req.ip} | ${req.headers["user-agent"]}`
     await loggerQueue.add(`log:${req.ip}`, { filename: "trace.log", entry: entry });
     console.log(entry);
     next();

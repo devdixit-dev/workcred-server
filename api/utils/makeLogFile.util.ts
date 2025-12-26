@@ -4,7 +4,6 @@ import path from 'path';
 const makeLogFile = async (filename: string, entry: string) => {
   try{
     const logsDir = path.join(process.cwd(), 'logs');
-    console.log(logsDir)
 
     if(!fs.existsSync(logsDir)) {
       fs.mkdirSync(logsDir, { recursive: true });
