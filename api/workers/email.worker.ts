@@ -8,7 +8,7 @@ const worker = new Worker(
     console.log(`[worker] - job id: ${job.id} - job name: ${job.name}`);
     await sendEmail(job.data.to, job.data.subject, job.data.text);
     
-    console.log(`Email sent successfully`);
+    console.log(`Email sent successfully to: ${job.data.to}`);
   },
   {
     connection: redisConnection,

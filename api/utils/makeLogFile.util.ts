@@ -12,7 +12,6 @@ const makeLogFile = async (filename: string, entry: string) => {
     const logFile = path.join(logsDir, filename);
 
     fs.appendFileSync(logFile, entry, 'utf-8');
-    console.log(`${filename} logged with data`);
   }
   catch(error) {
     console.error(`Error creating log file: ${error}`);
