@@ -18,6 +18,7 @@
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
     "@types/ioredis": "^4.28.10",
     "@types/joi": "^17.2.2",
     "@types/jsonwebtoken": "^9.0.10",
@@ -26,6 +27,7 @@
     "bcryptjs": "^3.0.3",
     "bullmq": "^5.66.2",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",

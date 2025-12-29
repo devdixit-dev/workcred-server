@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import handleResponse from './services/handleResponse.service';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import authRouter from './routes/auth.route';
 import userRouter from './routes/user.route';
@@ -15,10 +16,16 @@ const createServer = async () => {
   app.use(express.json());
   app.use(cookieParser());
 
+  app.use(cors({
+    origin: "http://localhost:5471",
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true,
+    optionsSuccessStatus: 200
+  }));
+
   app.use(async (req: Request, _: Response, next: NextFunction) => {
-    let entry = `${Date.now()} - ${req.url} | ${req.method} | ${req.ip} | ${req.headers["user-agent"]}`
-    await loggerQueue.add(`log:${req.ip}`, { filename: "trace.log", entry: entry });
-    console.log(entry);
+    let entry = `${Date.now()} - ${req.url} | ${req.method} | ${req.ip} | ${req.headers["user-agent"]}\n`
+    await loggerQueue.add(`log:${req.ip}`, { filename: "trace.log", entry });
     next();
   });
 
@@ -35,12 +42,12 @@ const createServer = async () => {
     });
   });
 
-  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  app.use((err: any, _: Request, res: Response, next: NextFunction) => {
     console.error(`Unhandled error: ${err}`);
     handleResponse(res, 500, "Internal server error");
   });
 
-  app.use((req: Request, res: Response) => {
+  app.use((_: Request, res: Response) => {
     handleResponse(res, 404, "Service not found");
   });
 

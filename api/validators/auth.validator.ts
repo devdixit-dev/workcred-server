@@ -31,8 +31,8 @@ export const companyRegisterSchema = Joi.object({
     "string:min": "Company email is at least 8 characters long",
     "string:max": "Company email should not exceed limit of 30 characters"
   }),
-  companyContact: Joi.number().min(10).required().messages({
-    "number:empty": "Company contact is required",
-    "number:min": "Company contact is at least 10 numbers long"
+  companyContact: Joi.string().min(10).required().messages({
+    "string:empty": "Company contact is required",
+    "string:min": "Company contact is at least 10 numbers long"
   })
 });
