@@ -10,10 +10,10 @@ authRouter.post('/init', customRateLimiter(15 * 60 * 1000, 100), validate(compan
 
 authRouter.post('/signin', signIn);
 
-authRouter.put('/verify', verify);
+authRouter.post('/verify', verify);
 
-authRouter.patch('/forgot-password', forgotPassword);
+authRouter.put('/forgot-password', forgotPassword);
 
-authRouter.patch('/reset-password', resetPassword);
+authRouter.post('/reset-password', resetPassword);
 
 export default authRouter;

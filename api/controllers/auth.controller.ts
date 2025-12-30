@@ -91,7 +91,7 @@ export const verify = async (req: Request, res: Response) => {
       decoded?.id,
       filter,
       { new: true }
-    ).lean();
+    );
 
     if (!company) return handleResponse(res, 404, "Company not found");
 
@@ -99,7 +99,7 @@ export const verify = async (req: Request, res: Response) => {
       { name: company.companyAdmin },
       filter,
       { new: true }
-    ).lean();
+    );
 
     res.clearCookie('v_token', {
       httpOnly: true,
