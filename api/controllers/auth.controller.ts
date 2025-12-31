@@ -36,19 +36,16 @@ export const authInit = async (req: Request, res: Response) => {
     });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    await redisConnection.set(`verification:${company._id}`, otp, "EX", 180);
+    await redisConnection.set(`verification:${company._id}`, otp, "EX", 120);
 
     await emailQueue.add(
       'email:verification',
       { 
         to: companyEmail, 
         subject: 'Verification Mail - WorkCred Inc.', 
-        text: `Welcome ${companyAdmin} to WorkCred Incorporation\nYour verification otp is ${otp}. Verify your account to login in your account.`
+        text: `Welcome ${companyAdmin} to WorkCred Incorporation\nYour verification otp is ${otp}. Verify your account to login in your account. This otp is expired after 2 min`
       }
     );
-
-    let data = await redisConnection.get(`verification:${company._id}`);
-    console.log(data);
 
     const payload = { id: company._id };
     const token = encodeJwt(payload);
@@ -57,7 +54,7 @@ export const authInit = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'development',
       sameSite: 'lax',
-      maxAge: 3 * 60 * 1000 // 3 min expiry
+      maxAge: 10 * 60 * 1000 // 10 min expiry
     });
 
     return handleResponse(res, 200, "Account created");
@@ -80,7 +77,7 @@ export const verify = async (req: Request, res: Response) => {
     if (!decoded) return handleResponse(res, 403, "Invalid token");
 
     const storedOTP = await redisConnection.get(`verification:${decoded?.id}`);
-    if (!storedOTP || otp !== storedOTP) return handleResponse(res, 400, "OTP is invalid or expiry");
+    if (!storedOTP || otp !== storedOTP) return handleResponse(res, 400, "OTP is invalid or expired");
 
     let filter = {
       isActive: true,
@@ -114,6 +111,35 @@ export const verify = async (req: Request, res: Response) => {
     return handleResponse(res, 500, "Internal server error");
   }
 };
+
+export const resendEmailVerification = async (req: Request, res: Response) => {
+  try{
+    const token = req.cookies.v_token;
+    if (!token) return handleResponse(res, 401, "Unauthrised access denied");
+
+    const decoded = verifyJwt(token);
+    if (!decoded) return handleResponse(res, 403, "Invalid token");
+
+    const user = await User.findById(decoded.id);
+    if(!user) return handleResponse(res, 404, "User not found");
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    await redisConnection.set(`verification:${user.company}`, otp, "EX", 120);
+
+    await emailQueue.add(
+      'email:verification',
+      { 
+        to: user.email, 
+        subject: 'Verification Mail - WorkCred Inc.', 
+        text: `Your verification otp is ${otp}. Verify your account to login in your account. This otp is expired after 2 min`
+      }
+    );
+  }
+  catch(error) {
+    console.error(`Error in resending verification email: ${error}`);
+    return handleResponse(res, 500, "Internal server error");
+  }
+}
 
 export const signIn = (req: Request, res: Response) => {
   try {

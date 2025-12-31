@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authInit, forgotPassword, resetPassword, signIn, verify } from '../controllers/auth.controller';
+import { authInit, forgotPassword, resendEmailVerification, resetPassword, signIn, verify } from '../controllers/auth.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { companyRegisterSchema } from '../validators/auth.validator';
 import customRateLimiter from '../services/rateLimiter.service';
@@ -11,6 +11,8 @@ authRouter.post('/init', customRateLimiter(15 * 60 * 1000, 100), validate(compan
 authRouter.post('/signin', signIn);
 
 authRouter.post('/verify', verify);
+
+authRouter.post('/resend-verification', resendEmailVerification);
 
 authRouter.put('/forgot-password', forgotPassword);
 
