@@ -120,20 +120,26 @@ export const resendEmailVerification = async (req: Request, res: Response) => {
     const decoded = verifyJwt(token);
     if (!decoded) return handleResponse(res, 403, "Invalid token");
 
-    const user = await User.findById(decoded.id);
-    if(!user) return handleResponse(res, 404, "User not found");
+    const company = await Company.findById(decoded.id);
+    if(!company) return handleResponse(res, 404, "User not found");
+
+    if(company.isActive && company.isVerified) {
+      return handleResponse(res, 200, "Your account is already verified");
+    }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    await redisConnection.set(`verification:${user.company}`, otp, "EX", 120);
+    await redisConnection.set(`verification:${company._id}`, otp, "EX", 120);
 
     await emailQueue.add(
       'email:verification',
       { 
-        to: user.email, 
+        to: company.companyEmail, 
         subject: 'Verification Mail - WorkCred Inc.', 
         text: `Your verification otp is ${otp}. Verify your account to login in your account. This otp is expired after 2 min`
       }
     );
+
+    return handleResponse(res, 200, "Verification code sent successfully");
   }
   catch(error) {
     console.error(`Error in resending verification email: ${error}`);
