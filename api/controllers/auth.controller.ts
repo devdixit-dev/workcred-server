@@ -6,6 +6,7 @@ import User from '../models/user.model';
 import redisConnection from '../config/redis.config';
 import { encodeJwt, verifyJwt } from '../utils/jwt.util';
 import emailQueue from '../queues/email.queue';
+import bcrypt from 'bcryptjs';
 
 export const authInit = async (req: Request, res: Response) => {
   try {
@@ -147,9 +148,44 @@ export const resendEmailVerification = async (req: Request, res: Response) => {
   }
 }
 
-export const signIn = (req: Request, res: Response) => {
+export const signIn = async (req: Request, res: Response) => {
   try {
+    const { email, password, role } = req.body;
 
+    const user = await User.findOne({ email }).select("+password");
+    console.log(user);
+    if(!user) {
+      return handleResponse(res, 404, 'User account not exist');
+    }
+
+    const comparePassword = await bcrypt.compare(password, user.password);
+    console.log(comparePassword);
+    if(!comparePassword) {
+      return handleResponse(res, 403, 'User email or password is incorrect')
+    }
+
+    if(user.role !== role) {
+      return handleResponse(res, 403, 'Unauthorised access denied');
+    }
+
+    const payload = {
+      id: user._id,
+      email: user.email,
+      company: user.company,
+      role: user.role,
+      verified: user.isVerified
+    }
+
+    const token = encodeJwt(payload);
+
+    res.cookie('a_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'development',
+      sameSite: 'lax',
+      maxAge: 30 * 60 * 1000
+    });
+
+    return handleResponse(res, 200, 'Logged in successfully');
   }
   catch (error) {
     console.error(`Error in sign in: ${error}`);
