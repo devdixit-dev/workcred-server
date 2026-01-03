@@ -11,7 +11,7 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
     if(!id) return handleResponse(res, 403, "Forbidden request");
 
     const decoded = verifyJwt(id);
-    if(!decoded || typeof decoded === 'string') return handleResponse(res, 401, "Unauthorized");
+    if(!decoded || typeof decoded === 'string') return handleResponse(res, 401, "Unauthorized access denied");
 
     const user = await User.findById(decoded?.id).select('_id email company role').lean();
     if(!user || !user.isActive || !user.isVerified) return handleResponse(res, 404, "User not found or verified");

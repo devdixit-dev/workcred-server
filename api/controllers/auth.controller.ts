@@ -148,6 +148,21 @@ export const resendEmailVerification = async (req: Request, res: Response) => {
   }
 }
 
+export const isTokenAvailable = async (req: Request, res: Response) => {
+  try{
+    const token = req.cookies.a_token;
+    if(token) {
+      return handleResponse(res, 200, 'Token available');
+    } else {
+      return handleResponse(res, 404, 'Token not provided');
+    }
+  }
+  catch(error) {
+    console.error(`Error in verifying token availability ${error}`);
+    return handleResponse(res, 500, "Internal server error");
+  }
+}
+
 export const signIn = async (req: Request, res: Response) => {
   try {
     const { email, password, role } = req.body;

@@ -3,6 +3,7 @@ import { authInit, forgotPassword, resendEmailVerification, resetPassword, signI
 import { validate } from '../middlewares/validation.middleware';
 import { companyRegisterSchema } from '../validators/auth.validator';
 import customRateLimiter from '../services/rateLimiter.service';
+import isAuthenticated from '../middlewares/isAuth.middleware';
 
 const authRouter = Router();
 
@@ -13,6 +14,8 @@ authRouter.post('/signin', signIn);
 authRouter.post('/verify', verify);
 
 authRouter.post('/resend-verification', resendEmailVerification);
+
+authRouter.get('/is-token', );
 
 authRouter.put('/forgot-password', forgotPassword);
 
